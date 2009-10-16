@@ -5,7 +5,7 @@
 
  <portlet
    addview="redturtle.portlet.content.ContentPortlet"
-   title="Content portlet"
+   title="RedTurtle Content portlet"
    description=""
    />
 

@@ -2,6 +2,8 @@ from zope.interface import implements
 
 from plone.portlets.interfaces import IPortletDataProvider
 from plone.app.portlets.portlets import base
+from plone.app.form.widgets.uberselectionwidget import UberSelectionWidget
+from plone.app.vocabularies.catalog import SearchableTextSourceBinder
 
 from zope import schema
 from zope.formlib import form
@@ -18,14 +20,38 @@ class IContentPortlet(IPortletDataProvider):
     same.
     """
 
-    # TODO: Add any zope.schema fields here to capture portlet configuration
-    # information. Alternatively, if there are no settings, leave this as an
-    # empty interface - see also notes around the add form and edit form
-    # below.
+    showTitle = schema.Bool(title=_(u"show_title",default=u"Show title"),
+                               description = _(u"Show the title of the object."),
+                               required = False)
+    
+    showDescr = schema.Bool(title=_(u"Show description"),
+                               description = _(u"Show the description of the object."),
+                               default = False,
+                               required = False)
+    
+    showText = schema.Bool(title=_(u"Show text"),
+                               description = _(u"Show the formatted text of the object, if there is."),
+                               default = False,
+                               required = False)
+    
+    showImage = schema.Bool(title=_(u"Show image"),
+                               description = _(u"Show the image of the object, if there is."),
+                               default = False,
+                               required = False)
+    
+    showMore = schema.Bool(title=_(u"Show more"),
+                               description = _(u"Is a link to the object, to show all the informations."),
+                               required = False)
+    
+    content = schema.Choice(title=_(u"Target object"),
+                            description=_(u"Find the items to show."),
+                            required=True,
+                            source=SearchableTextSourceBinder({}, default_query='path:'))
+    
+    portletId = schema.TextLine(title=_(u"Class of the portlet"),
+                            description=_(u"Insert a class for the portlet stylesheet. If empty, the class will be the id of the object."),
+                            required=False)
 
-    # some_field = schema.TextLine(title=_(u"Some field"),
-    #                              description=_(u"A field to use"),
-    #                              required=True)
 
 
 class Assignment(base.Assignment):
@@ -36,24 +62,23 @@ class Assignment(base.Assignment):
     """
 
     implements(IContentPortlet)
+    
+    def __init__(self,showTitle=False,showDescr=False,showText=False,showImage=False,showMore=False,content=None,portletId=''):
+        self.showTitle=showTitle
+        self.showDescr = showDescr
+        self.showText = showText
+        self.showImage = showImage
+        self.showMore = showMore
+        self.content = content
+        self.portletId = portletId
 
-    # TODO: Set default values for the configurable parameters here
-
-    # some_field = u""
-
-    # TODO: Add keyword parameters for configurable parameters here
-    # def __init__(self, some_field=u""):
-    #    self.some_field = some_field
-
-    def __init__(self):
-        pass
 
     @property
     def title(self):
         """This property is used to give the title of the portlet in the
         "manage portlets" screen.
         """
-        return "Content portlet"
+        return "RedTurtle Content Portlet"
 
 
 class Renderer(base.Renderer):
@@ -65,7 +90,29 @@ class Renderer(base.Renderer):
     """
 
     render = ViewPageTemplateFile('contentportlet.pt')
-
+    
+    def getItem(self):
+        context = self.context
+        root_path= context.portal_url.getPortalObject().getPhysicalPath()
+        item_path = self.data.content.split('/')
+        item_url= '/'.join(root_path) + '/'.join(item_path[:-1])
+        item = context.portal_catalog(path={'query':item_url,'depth':1},id=item_path[-1])
+        if item:
+            return item[0]
+        else:
+            return []
+        
+    def needObj(self,item):
+        if self.data.showTitle or self.data.showImage:
+            return item.getObject()
+        else:
+            return False
+    
+    def getPortletClass(self,item):
+        if self.data.portletId:
+            return self.data.portletId
+        else:
+            return item.getId
 
 class AddForm(base.AddForm):
     """Portlet add form.
@@ -75,24 +122,10 @@ class AddForm(base.AddForm):
     constructs the assignment that is being added.
     """
     form_fields = form.Fields(IContentPortlet)
-
+    form_fields['content'].custom_widget = UberSelectionWidget
+    
     def create(self, data):
         return Assignment(**data)
-
-
-# NOTE: If this portlet does not have any configurable parameters, you
-# can use the next AddForm implementation instead of the previous.
-
-# class AddForm(base.NullAddForm):
-#     """Portlet add form.
-#     """
-#     def create(self):
-#         return Assignment()
-
-
-# NOTE: If this portlet does not have any configurable parameters, you
-# can remove the EditForm class definition and delete the editview
-# attribute from the <plone:portlet /> registration in configure.zcml
 
 
 class EditForm(base.EditForm):
@@ -102,3 +135,4 @@ class EditForm(base.EditForm):
     zope.formlib which fields to display.
     """
     form_fields = form.Fields(IContentPortlet)
+    form_fields['content'].custom_widget = UberSelectionWidget

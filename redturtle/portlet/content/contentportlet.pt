@@ -1,19 +1,42 @@
-<dl class="portlet portletContentPortlet"
-    i18n:domain="redturtle.portlet.content">
-
+<dl class=""
+    i18n:domain="redturtle.portlet.content"
+	tal:define="item view/getItem;
+				item_obj python:view.needObj(item)"
+	tal:condition="item"
+	tal:attributes="class python:view.getPortletClass(item)+' portlet portletContentPortlet'">
+		
     <dt class="portletHeader">
         <span class="portletTopLeft"></span>
-        Header
+        <tal:if condition="view/data/showTitle">
+			  <a href="" tal:condition="not:view/data/showMore"
+			  			 tal:attributes="href item/getURL">
+			  	<span tal:content="item/Title"/>
+			 </a>
+			 <span tal:condition="view/data/showMore"
+			 		tal:content="item/Title"/>
+		</tal:if>
         <span class="portletTopRight"></span>
     </dt>
 
     <dd class="portletItem odd">
-        Body text
+    	<div class="image_float" tal:condition="python:view.data.showImage and item_obj.getImage()">
+        	<img src="" tal:attributes="src string:${item/getURL}/image_mini;
+										alt item_obj/getImageCaption"/>
+        </div>
+        <div class="descr_item" tal:condition="python:view.data.showDescr and item.Description">
+        	<span tal:content="item/Description"/>
+        </div>
+		<div class="text_item" tal:condition="python:view.data.showText and item_obj.getText()">
+        	<span tal:replace="structure item_obj/getText"/>
+        </div>
+		<div class="clr_left zero"></div>
     </dd>
 
-    <dd class="portletFooter">
+    <dd class="portletFooter more_item" tal:condition="view/data/showMore">
         <span class="portletBottomLeft"></span>
-        Footer
+        <a href="" tal:attributes="href item/getURL">
+				<span i18n:translate="more_link">more...</span>
+		</a>
         <span class="portletBottomRight"></span>
     </dd>
 
