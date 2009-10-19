@@ -71,3 +71,6 @@ msgstr "Classe della portlet"
 #. Default: "Insert a class for the portlet stylesheet. If empty, the class will be the id of the object."
 msgid "Insert a class for the portlet stylesheet. If empty, the class will be the id of the object."
 msgstr "Inserisci una classe per lo stile della portlet. Se vuoto, la classe sara' l' id dell' oggetto"
+
+msgid "more_link"
+msgstr "segue..."

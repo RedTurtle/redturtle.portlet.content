@@ -108,7 +108,7 @@ class Renderer(base.Renderer):
         else:
             return False
     
-    def getPortletClass(self,item):
+    def getPortletId(self,item):
         if self.data.portletId:
             return self.data.portletId
         else:

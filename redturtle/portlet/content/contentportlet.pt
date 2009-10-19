@@ -1,9 +1,9 @@
-<dl class=""
+<dl class="portlet portletContentPortlet"
     i18n:domain="redturtle.portlet.content"
 	tal:define="item view/getItem;
 				item_obj python:view.needObj(item)"
 	tal:condition="item"
-	tal:attributes="class python:view.getPortletClass(item)+' portlet portletContentPortlet'">
+	tal:attributes="id python:view.getPortletId(item)">
 		
     <dt class="portletHeader">
         <span class="portletTopLeft"></span>
