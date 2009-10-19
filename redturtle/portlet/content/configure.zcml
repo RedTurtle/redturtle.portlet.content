@@ -11,7 +11,7 @@
 	
     <genericsetup:registerProfile
        name="default"
-       title="Content portlet"
+       title="Redturtle Content portlet"
        directory="profiles/default"
        description=""
        provides="Products.GenericSetup.interfaces.EXTENSION"
