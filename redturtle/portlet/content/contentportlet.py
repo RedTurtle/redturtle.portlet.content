@@ -48,8 +48,8 @@ class IContentPortlet(IPortletDataProvider):
                             required=True,
                             source=SearchableTextSourceBinder({}, default_query='path:'))
     
-    portletId = schema.TextLine(title=_(u"Class of the portlet"),
-                            description=_(u"Insert a class for the portlet stylesheet. If empty, the class will be the id of the object."),
+    portletId = schema.TextLine(title=_(u"Id of the portlet"),
+                            description=_(u"Insert an Id for the portlet stylesheet. If empty, the Id will be the id of the object."),
                             required=False)
 
 
@@ -113,6 +113,15 @@ class Renderer(base.Renderer):
             return self.data.portletId
         else:
             return item.getId
+
+    def hasImageField(self,item):
+        try:
+            if item.getImage():
+                return True
+            else:
+                return False
+        except AttributeError:
+            return False
 
 class AddForm(base.AddForm):
     """Portlet add form.

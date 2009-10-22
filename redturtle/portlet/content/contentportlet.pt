@@ -19,12 +19,12 @@
     </dt>
 
     <dd class="portletItem odd">
-    	<div class="image_float" tal:condition="python:view.data.showImage and item_obj.getImage()">
+    	<div class="image_float" tal:condition="python:view.data.showImage and view.hasImageField(item_obj)">
         	<img src="" tal:attributes="src string:${item/getURL}/image_mini;
 										alt item_obj/getImageCaption"/>
         </div>
         <div class="descr_item" tal:condition="python:view.data.showDescr and item.Description">
-        	<span tal:content="item/Description"/>
+        	<p class="documentDescription" tal:content="item/Description"/>
         </div>
 		<div class="text_item" tal:condition="python:view.data.showText and item_obj.getText()">
         	<span tal:replace="structure item_obj/getText"/>
