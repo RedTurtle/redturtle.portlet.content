@@ -78,7 +78,7 @@ class Assignment(base.Assignment):
         """This property is used to give the title of the portlet in the
         "manage portlets" screen.
         """
-        return "RedTurtle Content Portlet"
+        return "Generic content portlet"
 
 
 class Renderer(base.Renderer):

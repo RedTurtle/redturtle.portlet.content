@@ -38,7 +38,7 @@ msgstr "Mostra testo"
 
 #. Default: "Show the formatted text of the object, if there is."
 msgid "Show the formatted text of the object, if there is."
-msgstr "Mostra il testo formattato dell' oggetto, se e' presente."
+msgstr "Mostra il testo formattato dell'oggetto, se e' presente."
 
 #. Default: "Show image"
 msgid "Show image"
@@ -46,7 +46,7 @@ msgstr "Mostra immagine"
 
 #. Default: "Show the image of the object, if there is."
 msgid "Show the image of the object, if there is."
-msgstr "Mostra l' immagine dell' oggetto, se e' presente."
+msgstr "Mostra l' immagine dell'oggetto, se e' presente."
 
 #. Default: "Show more"
 msgid "Show more"
@@ -54,7 +54,7 @@ msgstr "Mostra altro"
 
 #. Default: "Is a link to the object, to show all the informations."
 msgid "Is a link to the object, to show all the informations."
-msgstr "E' un link all' oggetto, per visualizzare tutte le informazioni."
+msgstr "E' un link all'oggetto, per visualizzare tutte le informazioni."
 
 #. Default: "Target object"
 msgid "Target object"
@@ -62,7 +62,7 @@ msgstr "Oggetto selezionato"
 
 #. Default: "Find the items to show."
 msgid "Find the items to show."
-msgstr "Cerca l' oggetto da mostrare."
+msgstr "Cerca l'oggetto da mostrare."
 
 #. Default: "Class of the portlet"
 msgid "Class of the portlet"
@@ -70,7 +70,7 @@ msgstr "Classe della portlet"
 
 #. Default: "Insert a class for the portlet stylesheet. If empty, the class will be the id of the object."
 msgid "Insert a class for the portlet stylesheet. If empty, the class will be the id of the object."
-msgstr "Inserisci una classe per lo stile della portlet. Se vuoto, la classe sara' l' id dell' oggetto"
+msgstr "Inserisci una classe per lo stile della portlet. Se vuoto, la classe sara' l'id dell'oggetto"
 
 msgid "more_link"
 msgstr "segue..."

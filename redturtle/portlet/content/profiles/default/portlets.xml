@@ -5,8 +5,9 @@
 
  <portlet
    addview="redturtle.portlet.content.ContentPortlet"
-   title="RedTurtle Content portlet"
-   description=""
-   />
+   title="Generic content portlet"
+   description="">
+   <for interface="plone.app.portlets.interfaces.IColumn" />
+ </portlet>
 
 </portlets>
