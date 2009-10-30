@@ -1,6 +1,8 @@
 /*** immagine  ***/
 .image_float {
 	float: left;
+	margin-right:1em;
+	margin-bottom:1em;
 }
 .clr_left {
 	clear: left;
