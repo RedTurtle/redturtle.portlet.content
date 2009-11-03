@@ -68,9 +68,9 @@ msgstr "Cerca l'oggetto da mostrare."
 msgid "Id of the portlet"
 msgstr "Id della portlet"
 
-#. Default: "Insert a class for the portlet stylesheet. If empty, the class will be the id of the object."
-msgid "Insert a class for the portlet stylesheet. If empty, the class will be the id of the object."
-msgstr "Inserisci un Id per lo stile della portlet. Se vuoto, l'Id sara' l'id dell'oggetto"
+#. Default: "Insert an Id for the portlet stylesheet. If empty, the Id will be the id of the object."
+msgid "Insert an Id for the portlet stylesheet. If empty, the Id will be the id of the object."
+msgstr "Inserisci un Id per lo stile della portlet. Se vuoto, l'Id sara' l'id dell'oggetto."
 
 msgid "more_link"
 msgstr "segue..."
