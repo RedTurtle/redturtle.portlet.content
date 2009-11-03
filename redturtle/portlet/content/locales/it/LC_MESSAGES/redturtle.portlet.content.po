@@ -54,7 +54,7 @@ msgstr "Mostra altro"
 
 #. Default: "Is a link to the object, to show all the informations."
 msgid "Is a link to the object, to show all the informations."
-msgstr "E' un link all'oggetto, per visualizzare tutte le informazioni."
+msgstr "E' un link all'oggetto, per visualizzare tutte le informazioni. Se selezionato, il titolo non sara' piu' clicccabile"
 
 #. Default: "Target object"
 msgid "Target object"

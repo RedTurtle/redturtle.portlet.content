@@ -40,7 +40,7 @@ class IContentPortlet(IPortletDataProvider):
                                required = False)
     
     showMore = schema.Bool(title=_(u"Show more"),
-                               description = _(u"Is a link to the object, to show all the informations."),
+                               description = _(u"Is a link to the object, to show all the informations. IF checked, the title will not be clickable"),
                                required = False)
     
     content = schema.Choice(title=_(u"Target object"),
