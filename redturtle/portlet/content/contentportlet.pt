@@ -4,21 +4,31 @@
 				item_obj python:view.needObj(item)"
 	tal:condition="item"
 	tal:attributes="id python:view.getPortletId(item)">
-		
+	
+	<!-- 
+	N.B: se non e' settato il titolo della portlet,
+	aggiungi al dt anche la classe "hidden"
+	-->	
+
     <dt class="portletHeader">
         <span class="portletTopLeft"></span>
-        <tal:if condition="view/data/showTitle">
-			  <a href="" tal:condition="not:view/data/showMore"
-			  			 tal:attributes="href item/getURL">
-			  	<span tal:content="item/Title"/>
-			 </a>
-			 <span tal:condition="view/data/showMore"
-			 		tal:content="item/Title"/>
-		</tal:if>
+		<a href="" tal:attributes="href item/getURL">
+		 	<span class="tile">Titolo Portlet</span>
+		</a>
         <span class="portletTopRight"></span>
     </dt>
 
     <dd class="portletItem odd">
+    	<tal:if condition="view/data/showTitle">
+    		<div class="title_item">
+    		 <h3>	
+				  <a href="" tal:attributes="href item/getURL">
+				  	<span tal:replace="item/Title"/>
+				  </a>
+			  </h3>
+			</div>
+		</tal:if>
+		
     	<div class="image_float" tal:condition="python:view.data.showImage and view.hasImageField(item_obj)">
         	<img src="" tal:attributes="src string:${item/getURL}/image_mini;
 										alt item_obj/getImageCaption"/>

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.0.0'
+version = '1.1.0-SVN-unreleased'
 
 setup(name='redturtle.portlet.content',
       version=version,

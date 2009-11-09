@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.0-SVN-Unreleased (2009/11/09)
+-----------------
+
+* Aggiunto titolo portlet separato da titolo documento
+
 1.0.0 (2009/10/22)
 ------------------
 
