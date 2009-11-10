@@ -4,11 +4,6 @@
 				item_obj python:view.needObj(item)"
 	tal:condition="item"
 	tal:attributes="id python:view.getPortletId(item)">
-	
-	<!-- 
-	N.B: se non e' settato il titolo della portlet,
-	aggiungi al dt anche la classe "hidden"
-	-->	
 
     <dt tal:define="title view/data/portletTitle"
 		tal:attributes="class view/getClass">

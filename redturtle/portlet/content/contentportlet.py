@@ -89,7 +89,10 @@ class Assignment(base.Assignment):
         """This property is used to give the title of the portlet in the
         "manage portlets" screen.
         """
-        return "Generic content portlet"
+        if self.portletTitle:
+            return self.portletTitle
+        else:
+            return "Generic content portlet"
 
 
 class Renderer(base.Renderer):
