@@ -19,7 +19,9 @@ class IContentPortlet(IPortletDataProvider):
     data that is being rendered and the portlet assignment itself are the
     same.
     """
-
+    portletTitle = schema.TextLine(title=_(u"Title of the portlet"),
+                               description = _(u"Insert the title of the portlet. If empty,the title will be the title of the object"),
+                               required = False)
     showTitle = schema.Bool(title=_(u"show_title",default=u"Show title"),
                                description = _(u"Show the title of the object."),
                                required = False)
@@ -63,7 +65,16 @@ class Assignment(base.Assignment):
 
     implements(IContentPortlet)
     
-    def __init__(self,showTitle=False,showDescr=False,showText=False,showImage=False,showMore=False,content=None,portletId=''):
+    def __init__(self,portletTitle='',
+                      showTitle=False,
+                      showDescr=False,
+                      showText=False,
+                      showImage=False,
+                      showMore=False,
+                      content=None,
+                      portletId=''):
+        
+        self.portletTitle=portletTitle
         self.showTitle=showTitle
         self.showDescr = showDescr
         self.showText = showText
@@ -122,6 +133,12 @@ class Renderer(base.Renderer):
                 return False
         except AttributeError:
             return False
+    
+    def getClass(self):
+        if self.data.portletTitle:
+            return 'portletHeader'
+        else:
+            return 'portletHeader hidden'
 
 class AddForm(base.AddForm):
     """Portlet add form.

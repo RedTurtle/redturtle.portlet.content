@@ -10,10 +10,12 @@
 	aggiungi al dt anche la classe "hidden"
 	-->	
 
-    <dt class="portletHeader">
+    <dt tal:define="title view/data/portletTitle"
+		tal:attributes="class view/getClass">
         <span class="portletTopLeft"></span>
 		<a href="" tal:attributes="href item/getURL">
-		 	<span class="tile">Titolo Portlet</span>
+		 	<span class="tile"
+				  tal:content="title">Portlet title</span>
 		</a>
         <span class="portletTopRight"></span>
     </dt>
