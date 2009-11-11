@@ -117,10 +117,10 @@ class Renderer(base.Renderer):
             return []
         
     def needObj(self,item):
-        if self.data.showTitle or self.data.showImage:
+        if self.data.showText or self.data.showImage:
             return item.getObject()
         else:
-            return False
+            return None
     
     def getPortletId(self,item):
         if self.data.portletId:
