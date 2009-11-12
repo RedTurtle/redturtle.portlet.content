@@ -114,10 +114,10 @@ class Renderer(base.Renderer):
         if item:
             return item[0]
         else:
-            return []
+            return None
         
     def needObj(self,item):
-        if self.data.showText or self.data.showImage:
+        if (self.data.showText or self.data.showImage) and item:
             return item.getObject()
         else:
             return None

@@ -1,5 +1,9 @@
 Changelog
 =========
+1.1.1 (2009/11/13)
+------------------
+
+* risolto problema con utenti anonimi [andrea]
 
 1.1.0(2009/11/12)
 -----------------
