@@ -1,5 +1,11 @@
 Changelog
 =========
+
+1.2.0 (2010/01/13)
+------------------
+
+* aggiunto campo portletClass alla portlet ContentPortlet per permettere di indicare classi CSS per la portlet [fdelia]
+
 1.1.1 (2009/11/13)
 ------------------
 

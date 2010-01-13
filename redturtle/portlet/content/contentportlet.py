@@ -53,7 +53,10 @@ class IContentPortlet(IPortletDataProvider):
     portletId = schema.TextLine(title=_(u"Id of the portlet"),
                             description=_(u"Insert an Id for the portlet stylesheet. If empty, the Id will be the id of the object."),
                             required=False)
-
+    
+    portletClass = schema.TextLine(title=_(u"Classe CSS"),
+                        description=_(u"Puoi aggiungere in questo campo una classe CSS (o più classi separate da uno spazio)."),
+                        required=False)
 
 
 class Assignment(base.Assignment):
@@ -72,7 +75,8 @@ class Assignment(base.Assignment):
                       showImage=False,
                       showMore=False,
                       content=None,
-                      portletId=''):
+                      portletId='',
+                      portletClass=''):
         
         self.portletTitle=portletTitle
         self.showTitle=showTitle
@@ -82,6 +86,7 @@ class Assignment(base.Assignment):
         self.showMore = showMore
         self.content = content
         self.portletId = portletId
+        self.portletClass = portletClass
 
 
     @property
@@ -104,6 +109,12 @@ class Renderer(base.Renderer):
     """
 
     render = ViewPageTemplateFile('contentportlet.pt')
+    
+    def getPortletClass(self):
+        if self.data.portletClass:
+            return self.data.portletClass
+        else:
+            return ''
     
     def getItem(self):
         context = self.context
