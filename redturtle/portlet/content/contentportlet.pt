@@ -32,7 +32,7 @@
 										alt item_obj/getImageCaption"/>
         </div>
         <div class="descr_item" tal:condition="python:view.data.showDescr and item.Description">
-        	<p class="documentDescription" tal:content="item/Description"/>
+        	<p class="documentDescription" tal:content="structure python:view.getItemDescription(item)"/>
         </div>
 		<div class="text_item" tal:condition="python:view.data.showText and item_obj.getText()">
         	<span tal:replace="structure item_obj/getText"/>

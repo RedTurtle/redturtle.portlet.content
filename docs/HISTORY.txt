@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.2.1 (2010/02/03)
+------------------
+
+* risolto bug con i campi nuovi per le portlet vecchie [andrea]
+* modificata vista per permettere di visualizzare la descrizione formattata [andrea]
+
 1.2.0 (2010/01/13)
 ------------------
 

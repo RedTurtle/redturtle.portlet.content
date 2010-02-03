@@ -72,5 +72,13 @@ msgstr "Id della portlet"
 msgid "Insert an Id for the portlet stylesheet. If empty, the Id will be the id of the object."
 msgstr "Inserisci un Id per lo stile della portlet. Se vuoto, l'Id sara' l'id dell'oggetto."
 
+#. Default: "CSS class"
+msgid "CSS class"
+msgstr "Classe CSS"
+
+#. Default: "You can add in this field a CSS class (or more classes divided by a space)."
+msgid "You can add in this field a CSS class (or more classes divided by a space)."
+msgstr "Puoi aggiungere in questo campo una classe CSS (o piu' classi separate da uno spazio)."
+
 msgid "more_link"
 msgstr "segue..."

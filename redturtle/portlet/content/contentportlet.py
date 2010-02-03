@@ -5,6 +5,8 @@ from plone.app.portlets.portlets import base
 from plone.app.form.widgets.uberselectionwidget import UberSelectionWidget
 from plone.app.vocabularies.catalog import SearchableTextSourceBinder
 
+from Products.CMFCore.utils import getToolByName
+
 from zope import schema
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
@@ -54,8 +56,8 @@ class IContentPortlet(IPortletDataProvider):
                             description=_(u"Insert an Id for the portlet stylesheet. If empty, the Id will be the id of the object."),
                             required=False)
     
-    portletClass = schema.TextLine(title=_(u"Classe CSS"),
-                        description=_(u"Puoi aggiungere in questo campo una classe CSS (o più classi separate da uno spazio)."),
+    portletClass = schema.TextLine(title=_(u"CSS class"),
+                        description=_(u"You can add in this field a CSS class (or more classes divided by a space)."),
                         required=False)
 
 
@@ -67,6 +69,12 @@ class Assignment(base.Assignment):
     """
 
     implements(IContentPortlet)
+    """
+    portletId e portletClass are added here, to avoid breaking old portlets
+    """
+    portletId=''
+    portletClass=''    
+    
     
     def __init__(self,portletTitle='',
                       showTitle=False,
@@ -115,7 +123,7 @@ class Renderer(base.Renderer):
             return self.data.portletClass
         else:
             return ''
-    
+        
     def getItem(self):
         context = self.context
         root_path= context.portal_url.getPortalObject().getPhysicalPath()
@@ -153,6 +161,12 @@ class Renderer(base.Renderer):
             return 'portletHeader'
         else:
             return 'portletHeader hidden'
+        
+    def getItemDescription(self,item):
+        portal_transforms = getToolByName(self, 'portal_transforms')
+        data = portal_transforms.convert('web_intelligent_plain_text_to_html', item.Description)
+        return data.getData()
+        
 
 class AddForm(base.AddForm):
     """Portlet add form.
