@@ -80,5 +80,14 @@ msgstr "Classe CSS"
 msgid "You can add in this field a CSS class (or more classes divided by a space)."
 msgstr "Puoi aggiungere in questo campo una classe CSS (o piu' classi separate da uno spazio)."
 
+#Default: "more..."
 msgid "more_link"
 msgstr "segue..."
+
+#Default: "comment"
+msgid "comment"
+msgstr "commento"
+
+#Default: "comments"
+msgid "comments"
+msgstr "commenti"

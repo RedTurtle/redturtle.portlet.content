@@ -9,6 +9,7 @@ from Products.CMFCore.utils import getToolByName
 
 from zope import schema
 from zope.formlib import form
+from Products.CMFDefault.DiscussionTool import DiscussionNotAllowed
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 from redturtle.portlet.content import ContentPortletMessageFactory as _
@@ -43,6 +44,11 @@ class IContentPortlet(IPortletDataProvider):
                                default = False,
                                required = False)
     
+    showComments = schema.Bool(title=_(u"Show number of comments"),
+                               description = _(u"Show the number of comments of the object, if they are activated."),
+                               default = False,
+                               required = False)
+    
     showMore = schema.Bool(title=_(u"Show more"),
                                description = _(u"Is a link to the object, to show all the informations. IF checked, the title will not be clickable"),
                                required = False)
@@ -70,10 +76,11 @@ class Assignment(base.Assignment):
 
     implements(IContentPortlet)
     """
-    portletId e portletClass are added here, to avoid breaking old portlets
+    portletId, portletClass and showComments are added here, to avoid breaking old portlets
     """
     portletId=''
     portletClass=''    
+    showComments=False
     
     
     def __init__(self,portletTitle='',
@@ -81,6 +88,7 @@ class Assignment(base.Assignment):
                       showDescr=False,
                       showText=False,
                       showImage=False,
+                      showComments=False,
                       showMore=False,
                       content=None,
                       portletId='',
@@ -91,6 +99,7 @@ class Assignment(base.Assignment):
         self.showDescr = showDescr
         self.showText = showText
         self.showImage = showImage
+        self.showComments=showComments
         self.showMore = showMore
         self.content = content
         self.portletId = portletId
@@ -136,7 +145,7 @@ class Renderer(base.Renderer):
             return None
         
     def needObj(self,item):
-        if (self.data.showText or self.data.showImage) and item:
+        if (self.data.showText or self.data.showImage or self.data.showComments) and item:
             return item.getObject()
         else:
             return None
@@ -166,7 +175,26 @@ class Renderer(base.Renderer):
         portal_transforms = getToolByName(self, 'portal_transforms')
         data = portal_transforms.convert('web_intelligent_plain_text_to_html', item.Description)
         return data.getData()
-        
+    
+    def getCommentsLen(self,item):
+        translation_service = getToolByName(self.context,'translation_service')
+        pd = getToolByName(self.context, 'portal_discussion', None)
+        try:
+            discussions=pd.getDiscussionFor(item)
+            num_discussions=discussions.replyCount(item)
+            if num_discussions == 1:
+                msg='comment'
+            else:
+                msg='comments'
+            comments_msg=translation_service.utranslate(domain='redturtle.portlet.content',
+                                                        msgid=msg,
+                                                        default=msg,
+                                                        context=self.context)
+            
+            return "%s %s" %(str(num_discussions),comments_msg)
+        except DiscussionNotAllowed:
+            return ""
+            
 
 class AddForm(base.AddForm):
     """Portlet add form.
