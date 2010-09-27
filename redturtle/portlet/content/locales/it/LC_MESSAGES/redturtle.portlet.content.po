@@ -84,6 +84,14 @@ msgstr "Puoi aggiungere in questo campo una classe CSS (o piu' classi separate d
 msgid "more_link"
 msgstr "segue..."
 
+#Default: "Show number of comments"
+msgid "Show number of comments"
+msgstr "Mostra il numero di commenti"
+
+#Default: "Show the number of comments of the object, if they are activated."
+msgid "Show the number of comments of the object, if they are activated."
+msgstr "Mostra il numero di commenti dell'oggetto, se sono attivati."
+
 #Default: "comment"
 msgid "comment"
 msgstr "commento"
