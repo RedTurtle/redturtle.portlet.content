@@ -177,24 +177,32 @@ class Renderer(base.Renderer):
         return data.getData()
     
     def getCommentsLen(self,item):
-        translation_service = getToolByName(self.context,'translation_service')
+        """
+        Return the number of comments of the object
+        """
         pd = getToolByName(self.context, 'portal_discussion', None)
         try:
             discussions=pd.getDiscussionFor(item)
             num_discussions=discussions.replyCount(item)
-            if num_discussions == 1:
-                msg='comment'
-            else:
-                msg='comments'
-            comments_msg=translation_service.utranslate(domain='redturtle.portlet.content',
-                                                        msgid=msg,
-                                                        default=msg,
-                                                        context=self.context)
-            
-            return "%s %s" %(str(num_discussions),comments_msg)
+            return num_discussions
         except DiscussionNotAllowed:
-            return ""
-            
+            return 0
+    
+    def getCommentsString(self,comments):
+        """
+        Return the text for the link, translated
+        """
+        translation_service = getToolByName(self.context,'translation_service')
+        if comments == 1:
+            msg='comment'
+        else:
+            msg='comments'
+        comments_msg=translation_service.utranslate(domain='redturtle.portlet.content',
+                                                    msgid=msg,
+                                                    default=msg,
+                                                    context=self.context)
+        
+        return "%s %s" %(str(comments),comments_msg)
 
 class AddForm(base.AddForm):
     """Portlet add form.

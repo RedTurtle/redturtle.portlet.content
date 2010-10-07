@@ -47,7 +47,7 @@
 			  	  		  tal:condition="comments">
 				  <a href="" tal:attributes="href string:${item/getURL}/#comments;
 				  							 title string:Comments">
-				  	<span tal:content="comments"/>
+				  	<span tal:content="python:view.getCommentsString(comments)"/>
 				  </a>
 				  <span tal:condition="view/data/showMore">|</span>
 			</tal:comments>
