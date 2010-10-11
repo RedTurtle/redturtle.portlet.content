@@ -9,7 +9,6 @@ from Products.CMFCore.utils import getToolByName
 
 from zope import schema
 from zope.formlib import form
-from Products.CMFDefault.DiscussionTool import DiscussionNotAllowed
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 from redturtle.portlet.content import ContentPortletMessageFactory as _
@@ -181,12 +180,17 @@ class Renderer(base.Renderer):
         Return the number of comments of the object
         """
         pd = getToolByName(self.context, 'portal_discussion', None)
-        try:
-            discussions=pd.getDiscussionFor(item)
-            num_discussions=discussions.replyCount(item)
-            return num_discussions
-        except DiscussionNotAllowed:
+        if not pd.isDiscussionAllowedFor:
             return 0
+        discussions=pd.getDiscussionFor(item)
+        if not discussions.hasReplies(item):
+            return 0
+        list_discussions=discussions.getReplies()
+        num_discussions=0
+        for discuss in list_discussions:
+            if discuss.review_state == 'published':
+                num_discussions +=1
+        return num_discussions
     
     def getCommentsString(self,comments):
         """
