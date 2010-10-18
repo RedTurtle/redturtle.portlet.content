@@ -185,10 +185,10 @@ class Renderer(base.Renderer):
         discussions=pd.getDiscussionFor(item)
         if not discussions.hasReplies(item):
             return 0
-        list_discussions=discussions.getReplies()
+        list_discussions=discussions.objectItems()
         num_discussions=0
         for discuss in list_discussions:
-            if discuss.review_state == 'published':
+            if discuss[1].review_state == 'published':
                 num_discussions +=1
         return num_discussions
     
