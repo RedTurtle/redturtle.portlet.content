@@ -180,7 +180,7 @@ class Renderer(base.Renderer):
         Return the number of comments of the object
         """
         pd = getToolByName(self.context, 'portal_discussion', None)
-        if not pd.isDiscussionAllowedFor:
+        if not pd.isDiscussionAllowedFor(item):
             return 0
         discussions=pd.getDiscussionFor(item)
         if not discussions.hasReplies(item):
