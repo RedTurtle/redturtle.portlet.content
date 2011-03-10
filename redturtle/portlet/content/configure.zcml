@@ -32,7 +32,7 @@
          interface=".contentportlet.IContentPortlet"
          assignment=".contentportlet.Assignment"
          view_permission="zope2.View"
-         edit_permission="cmf.ManagePortal"
+         edit_permission="plone.app.portlets.ManagePortlets"
          renderer=".contentportlet.Renderer"
          addview=".contentportlet.AddForm"
          editview=".contentportlet.EditForm"

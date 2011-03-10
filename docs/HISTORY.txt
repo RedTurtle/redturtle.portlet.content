@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.6 (2011/03/10)
+------------------
+
+* cambiato permesso per edit [andrea]
+
 1.2.5 (2010/10/18)
 ------------------
 
@@ -19,7 +24,7 @@ Changelog
 1.2.2 (2010/09/20)
 ------------------
 
-* aggiunta possibilitˆ di mostrare il numero di commenti [andrea]
+* aggiunta possibilitï¿½ di mostrare il numero di commenti [andrea]
 
 1.2.1 (2010/02/03)
 ------------------
