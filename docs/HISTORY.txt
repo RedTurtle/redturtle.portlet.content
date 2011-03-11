@@ -1,10 +1,11 @@
 Changelog
 =========
 
-1.2.6 (2011/03/10)
+1.2.6 (2011/03/??)
 ------------------
 
 * cambiato permesso per edit [andrea]
+* tradotto nome portlet [andrea]
 
 1.2.5 (2010/10/18)
 ------------------
