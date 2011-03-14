@@ -5,7 +5,7 @@ version = '1.2.6'
 
 setup(name='redturtle.portlet.content',
       version=version,
-      description="",
+      description="A generic portlet that allows to show various parts of an object, link thetitle, description, text, image or comments.",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
@@ -16,7 +16,7 @@ setup(name='redturtle.portlet.content',
         ],
       keywords='',
       author='RedTurtle Technology',
-      author_email='info@redturtle.net',
+      author_email='sviluppoplone@redturtle.net',
       url='http://plone.org',
       license='GPL',
       packages=find_packages(exclude=['ez_setup']),
