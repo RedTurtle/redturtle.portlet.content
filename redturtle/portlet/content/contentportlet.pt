@@ -9,7 +9,8 @@
     <dt tal:define="title view/data/portletTitle"
 		tal:attributes="class view/getClass">
         <span class="portletTopLeft"></span>
-		<a href="" tal:attributes="href item/getURL">
+		<a tal:condition="title"
+		   tal:attributes="href item/getURL">
 		 	<span class="tile"
 				  tal:content="title">Portlet title</span>
 		</a>
@@ -38,6 +39,24 @@
         	<span tal:replace="structure item_obj/getText"/>
         </div>
 		<div class="clr_left zero"></div>
+		<div class="socialLinks"
+		     tal:define="social_providers python:view.socialProviders(item_obj)"
+			 tal:condition="social_providers">
+	        <ul class="sectionBookmarks"
+	            tal:define="portal_url context/@@plone_portal_state/portal_url">
+	            <li tal:repeat="provider social_providers">
+	                <a href=""
+					   class="bookmarkItem"
+					   tal:attributes="href provider/url">
+	                    <img src="" 
+	                         tal:attributes="src string:${portal_url}/++resource++sb_images/${provider/logo}; alt string:${provider/id}" />
+	                    &nbsp;
+	                    <span class="bookmarkId" tal:content="provider/id">reddit</span>
+	                </a>
+	            </li>
+	        </ul>
+	        <div class="visualClear"></div>
+		</div>
     </dd>
 
     <dd class="portletFooter more_item" tal:condition="python: view.data.showMore or view.data.showComments">

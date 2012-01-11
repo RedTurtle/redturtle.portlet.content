@@ -1,18 +1,17 @@
-from zope.interface import implements
-
-from plone.portlets.interfaces import IPortletDataProvider
-from plone.app.portlets.portlets import base
-from plone.app.form.widgets.uberselectionwidget import UberSelectionWidget
-from plone.app.vocabularies.catalog import SearchableTextSourceBinder
-
+from Products.CMFCore.interfaces._content import ISiteRoot
 from Products.CMFCore.utils import getToolByName
-
-from zope import schema
-from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-
+from plone.app.form.widgets.uberselectionwidget import UberSelectionWidget
+from plone.app.portlets.portlets import base
+from plone.app.vocabularies.catalog import SearchableTextSourceBinder
+from plone.portlets.interfaces import IPortletDataProvider
 from redturtle.portlet.content import ContentPortletMessageFactory as _
-
+from string import Template
+from zope import schema
+from zope.component._api import getUtility
+from zope.formlib import form
+from zope.interface import implements
+import re
 
 class IContentPortlet(IPortletDataProvider):
     """A portlet
@@ -48,6 +47,11 @@ class IContentPortlet(IPortletDataProvider):
                                default = False,
                                required = False)
     
+    showSocial = schema.Bool(title=_(u"Show social links"),
+                               description = _(u"Show links to share this content with some social sites."),
+                               default = False,
+                               required = False)
+    
     showMore = schema.Bool(title=_(u"Show more"),
                                description = _(u"Is a link to the object, to show all the informations. IF checked, the title will not be clickable"),
                                required = False)
@@ -65,7 +69,6 @@ class IContentPortlet(IPortletDataProvider):
                         description=_(u"You can add in this field a CSS class (or more classes divided by a space)."),
                         required=False)
 
-
 class Assignment(base.Assignment):
     """Portlet assignment.
 
@@ -80,7 +83,7 @@ class Assignment(base.Assignment):
     portletId=''
     portletClass=''    
     showComments=False
-    
+    showSocial=False
     
     def __init__(self,portletTitle='',
                       showTitle=False,
@@ -88,6 +91,7 @@ class Assignment(base.Assignment):
                       showText=False,
                       showImage=False,
                       showComments=False,
+                      showSocial=False,
                       showMore=False,
                       content=None,
                       portletId='',
@@ -99,6 +103,7 @@ class Assignment(base.Assignment):
         self.showText = showText
         self.showImage = showImage
         self.showComments=showComments
+        self.showSocial=showSocial
         self.showMore = showMore
         self.content = content
         self.portletId = portletId
@@ -144,7 +149,7 @@ class Renderer(base.Renderer):
             return None
         
     def needObj(self,item):
-        if (self.data.showText or self.data.showImage or self.data.showComments) and item:
+        if (self.data.showText or self.data.showImage or self.data.showComments or self.data.showSocial) and item:
             return item.getObject()
         else:
             return None
@@ -207,7 +212,77 @@ class Renderer(base.Renderer):
                                                     context=self.context)
         
         return "%s %s" %(str(comments),comments_msg)
+    
+    def socialProviders(self,item):
+        """Returns a list of dicts with providers already
+           filtered and populated"""
+        if not self.socialEnabled(item):
+            return []
+        providers = []
+        available = self.availableProviders()
+        param = {}
+        param['title'] = item.Title()
+        param['description'] = item.Description()
+        param['url'] = item.absolute_url()
+        # BBB: Instead of using string formatting we moved to string Templates
+        pattern = re.compile("\%\(([a-zA-Z]*)\)s")
+        for provider in available:
+            url_tmpl = provider.get('url','').strip()
+            if not(url_tmpl):
+                continue
+            url_tmpl = re.sub(pattern,r'${\1}',url_tmpl)
+            provider['url'] = Template(url_tmpl).safe_substitute(param)
+            providers.append(provider)
+        return providers
 
+    def socialEnabled(self,item):
+        """Validates if social links should be visibles
+           for this item"""
+        if not self.data.showSocial or not item:
+            return False
+        if not self.socialLinksProduct():
+            return False
+        pp = getToolByName(self.context,'portal_properties')
+        if hasattr(pp,'sc_social_bookmarks_properties'):
+            enabled_portal_types = pp.sc_social_bookmarks_properties.getProperty("enabled_portal_types") or []
+        else:
+            enabled_portal_types = []
+        return item.portal_type in enabled_portal_types
+    
+    def socialLinksProduct(self):
+        """
+        Check if sc.social.bookmarks is installed
+        """
+        quickinstaller_tool=getToolByName(self.context,'portal_quickinstaller')
+        return quickinstaller_tool.isProductInstalled('sc.social.bookmarks')
+    
+    def availableProviders(self):
+        """
+        Return a list of available social providers
+        """
+        try:
+            from sc.social.bookmarks.config import all_providers
+        except:
+            return []
+        pp = getToolByName(self.context,'portal_properties')
+        if hasattr(pp,'sc_social_bookmarks_properties'):
+            bookmark_providers = pp.sc_social_bookmarks_properties.getProperty("bookmark_providers") or []
+        else:
+            bookmark_providers = []
+        providers=[]
+        for bookmarkId in bookmark_providers:
+            tmp_providers = [provider for provider in all_providers if provider.get('id', '') == bookmarkId]
+            if not tmp_providers:
+                continue
+            else:
+                provider = tmp_providers[0]
+
+            logo = provider.get('logo','')
+            url = provider.get('url','')
+            providers.append({'id': bookmarkId, 'logo': logo, 'url': url})
+
+        return providers
+    
 class AddForm(base.AddForm):
     """Portlet add form.
 
@@ -215,12 +290,28 @@ class AddForm(base.AddForm):
     zope.formlib which fields to display. The create() method actually
     constructs the assignment that is being added.
     """
-    form_fields = form.Fields(IContentPortlet)
-    form_fields['content'].custom_widget = UberSelectionWidget
+#    form_fields = form.Fields(IContentPortlet)
+#    form_fields['content'].custom_widget = UberSelectionWidget
+    
+    @property
+    def form_fields(self):
+        '''
+        '''
+        ff = form.Fields(IContentPortlet)
+        ff['content'].custom_widget = UberSelectionWidget
+        self.socialLinksProduct()
+        if not self.socialLinksProduct():
+            return ff.omit('showSocial')
+        else:
+            return ff
     
     def create(self, data):
         return Assignment(**data)
-
+    
+    def socialLinksProduct(self):
+        portal = getUtility(ISiteRoot)
+        quickinstaller_tool=getToolByName(portal,'portal_quickinstaller')
+        return quickinstaller_tool.isProductInstalled('sc.social.bookmarks')
 
 class EditForm(base.EditForm):
     """Portlet edit form.
@@ -228,5 +319,19 @@ class EditForm(base.EditForm):
     This is registered with configure.zcml. The form_fields variable tells
     zope.formlib which fields to display.
     """
-    form_fields = form.Fields(IContentPortlet)
-    form_fields['content'].custom_widget = UberSelectionWidget
+    @property
+    def form_fields(self):
+        '''
+        '''
+        ff = form.Fields(IContentPortlet)
+        ff['content'].custom_widget = UberSelectionWidget
+        self.socialLinksProduct()
+        if not self.socialLinksProduct():
+            return ff.omit('showSocial')
+        else:
+            return ff
+    
+    def socialLinksProduct(self):
+        portal = getUtility(ISiteRoot)
+        quickinstaller_tool=getToolByName(portal,'portal_quickinstaller')
+        return quickinstaller_tool.isProductInstalled('sc.social.bookmarks')

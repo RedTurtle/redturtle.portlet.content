@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.3.0 (2012/01/11)
+------------------
+
+* aggiunto campo per visualizzare i link per la condivisione (se è installato sc.social.bookmarks) [andrea]
+
 1.2.7 (2011/10/24)
 ------------------
 
