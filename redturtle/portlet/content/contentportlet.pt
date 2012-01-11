@@ -38,7 +38,7 @@
 		<div class="text_item" tal:condition="python:view.data.showText and getattr(item_obj,'getText',None)">
         	<span tal:replace="structure item_obj/getText"/>
         </div>
-		<div class="clr_left zero"></div>
+		<div class="visualClear"></div>
 		<div class="socialLinks"
 		     tal:define="social_providers python:view.socialProviders(item_obj)"
 			 tal:condition="social_providers">
