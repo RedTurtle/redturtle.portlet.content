@@ -6,6 +6,7 @@ Changelog
 
 * aggiunto campo per visualizzare i link per la condivisione (se è installato sc.social.bookmarks) [andrea]
 * supporto z3c.autoinclude [andrea]
+* fissata compatibility con Plone4 [andrea]
 
 1.2.7 (2011/10/24)
 ------------------
