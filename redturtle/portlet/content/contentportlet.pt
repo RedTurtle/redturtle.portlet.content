@@ -32,7 +32,7 @@
         	<img src="" tal:attributes="src string:${item/getURL}/image_mini;
 										alt item_obj/getImageCaption"/>
         </div>
-        <div class="descr_item" tal:condition="python:view.data.showDescr and getattr(item_obj,'Description',None)">
+        <div class="descr_item" tal:condition="python:view.data.showDescr and getattr(item,'Description',None)">
         	<p class="documentDescription" tal:content="structure python:view.getItemDescription(item)"/>
         </div>
 		<div class="text_item" tal:condition="python:view.data.showText and getattr(item_obj,'getText',None)">
