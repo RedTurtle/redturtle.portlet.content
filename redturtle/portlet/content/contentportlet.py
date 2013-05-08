@@ -1,15 +1,17 @@
-from Products.CMFCore.interfaces._content import ISiteRoot
-from Products.CMFCore.utils import getToolByName
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from plone.app.discussion.interfaces import IConversation
 from plone.app.form.widgets.uberselectionwidget import UberSelectionWidget
 from plone.app.portlets.portlets import base
 from plone.app.vocabularies.catalog import SearchableTextSourceBinder
 from plone.portlets.interfaces import IPortletDataProvider
+from Products.CMFCore.interfaces._content import ISiteRoot
+from Products.CMFCore.utils import getToolByName
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from redturtle.portlet.content import ContentPortletMessageFactory as _
 from string import Template
 from zope import schema
 from zope.component._api import getUtility
 from zope.formlib import form
+from zope.i18n import translate
 from zope.interface import implements
 import re
 
@@ -185,16 +187,16 @@ class Renderer(base.Renderer):
         """
         Return the number of comments of the object
         """
-        pd = getToolByName(self.context, 'portal_discussion', None)
-        if not pd.isDiscussionAllowedFor(item):
+        if not item.restrictedTraverse('@@conversation_view').enabled():
             return 0
-        discussions = pd.getDiscussionFor(item)
-        if not discussions.hasReplies(item):
-            return 0
-        list_discussions = discussions.objectItems()
+        wf = getToolByName(self.context, 'portal_workflow')
+        discussions = IConversation(item)
+        list_discussions = discussions.getThreads()
         num_discussions = 0
         for discuss in list_discussions:
-            if discuss[1].review_state == 'published':
+            comment_obj = discuss['comment']
+            workflow_status = wf.getInfoFor(comment_obj, 'review_state')
+            if workflow_status == 'published':
                 num_discussions += 1
         return num_discussions
 
@@ -202,15 +204,11 @@ class Renderer(base.Renderer):
         """
         Return the text for the link, translated
         """
-        translation_service = getToolByName(self.context, 'translation_service')
         if comments == 1:
             msg = 'comment'
         else:
             msg = 'comments'
-        comments_msg = translation_service.utranslate(domain='redturtle.portlet.content',
-                                                    msgid=msg,
-                                                    default=msg,
-                                                    context=self.context)
+        comments_msg = translate(_(msg), context=self.request)
 
         return "%s %s" % (str(comments), comments_msg)
 
