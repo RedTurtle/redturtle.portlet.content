@@ -1,11 +1,12 @@
 Changelog
 =========
 
-1.3.1 (unreleased)
+1.4.0 (unreleased)
 ------------------
 
 - fixed discussion count method [micecchi]
 - fixed translations [micecchi]
+- added new field that allows to select image size [micecchi]
 
 1.3.0 (2012-07-23)
 ------------------

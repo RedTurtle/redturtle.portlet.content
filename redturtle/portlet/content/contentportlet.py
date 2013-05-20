@@ -45,6 +45,11 @@ class IContentPortlet(IPortletDataProvider):
                                default=False,
                                required=False)
 
+    imageScale = schema.Choice(title=_(u"Image miniature"),
+                               description=_(u"Select and image miniature dimension, if you want to show the image for this content. If empty will be used mini miniature."),
+                               vocabulary="redturtle.portlet.content.ImageMiniaturesVocabulary",
+                               required=False)
+
     showComments = schema.Bool(title=_(u"Show number of comments"),
                                description=_(u"Show the number of comments of the object, if they are activated."),
                                default=False,
@@ -88,12 +93,14 @@ class Assignment(base.Assignment):
     portletClass = ''
     showComments = False
     showSocial = False
+    imageScale = ""
 
     def __init__(self, portletTitle='',
                       showTitle=False,
                       showDescr=False,
                       showText=False,
                       showImage=False,
+                      imageScale="",
                       showComments=False,
                       showSocial=False,
                       showMore=False,
@@ -106,6 +113,7 @@ class Assignment(base.Assignment):
         self.showDescr = showDescr
         self.showText = showText
         self.showImage = showImage
+        self.imageScale = imageScale
         self.showComments = showComments
         self.showSocial = showSocial
         self.showMore = showMore
@@ -171,6 +179,9 @@ class Renderer(base.Renderer):
                 return False
         except AttributeError:
             return False
+
+    def getImageScale(self):
+        return self.data.imageScale or "mini"
 
     def getClass(self):
         if self.data.portletTitle:

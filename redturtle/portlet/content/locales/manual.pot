@@ -20,6 +20,9 @@ msgstr ""
 msgid "comment"
 msgstr ""
 
-
 msgid "comments"
 msgstr ""
+
+Default: "-- select a value --"
+#: ./rerportletadvancedstatic.py:16
+msgid "vocabulary-missing-single-value-for-edit"

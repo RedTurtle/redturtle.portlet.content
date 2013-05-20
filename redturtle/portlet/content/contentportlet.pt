@@ -28,8 +28,9 @@
 			</div>
 		</tal:if>
 		
-    	<div class="image_float" tal:condition="python:view.data.showImage and view.hasImageField(item_obj)">
-        	<img src="" tal:attributes="src string:${item/getURL}/image_mini;
+    	<div class="image_float" tal:condition="python:view.data.showImage and view.hasImageField(item_obj)"
+             tal:define="scale view/getImageScale">
+        	<img src="" tal:attributes="src string:${item/getURL}/image_${scale};
 										alt item_obj/getImageCaption"/>
         </div>
         <div class="descr_item" tal:condition="python:view.data.showDescr and getattr(item,'Description',None)">
