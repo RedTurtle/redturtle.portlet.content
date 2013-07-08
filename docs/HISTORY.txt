@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.4.0 (unreleased)
+1.4.0 (2013-07-08)
 ------------------
 
 - fixed discussion count method [micecchi]
