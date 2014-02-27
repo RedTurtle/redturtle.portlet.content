@@ -27,7 +27,7 @@ class TestPortlet(TestCase):
 
     def test_interfaces(self):
         # TODO: Pass any keyword arguments to the Assignment constructor
-        portlet = contentportlet.Assignment()
+        portlet = contentportlet.Assignment(content='/front-page')
         self.failUnless(IPortletAssignment.providedBy(portlet))
         self.failUnless(IPortletDataProvider.providedBy(portlet.data))
 
@@ -45,7 +45,7 @@ class TestPortlet(TestCase):
         # form.
         # Note: if the portlet has a NullAddForm, simply call
         # addview() instead of the next line.
-        addview.createAndAdd(data={})
+        addview.createAndAdd(data={'content': '/front-page'})
 
         self.assertEquals(len(mapping), 1)
         self.failUnless(isinstance(mapping.values()[0],
@@ -56,7 +56,7 @@ class TestPortlet(TestCase):
         mapping = PortletAssignmentMapping()
         request = self.folder.REQUEST
 
-        mapping['foo'] = contentportlet.Assignment()
+        mapping['foo'] = contentportlet.Assignment(content='/front-page')
         editview = getMultiAdapter((mapping['foo'], request), name='edit')
         self.failUnless(isinstance(editview, contentportlet.EditForm))
 
@@ -68,7 +68,7 @@ class TestPortlet(TestCase):
                              context=self.portal)
 
         # TODO: Pass any keyword arguments to the Assignment constructor
-        assignment = contentportlet.Assignment()
+        assignment = contentportlet.Assignment(content='/front-page')
 
         renderer = getMultiAdapter(
             (context, request, view, manager, assignment), IPortletRenderer)
@@ -90,14 +90,14 @@ class TestRenderer(TestCase):
 
         # TODO: Pass any default keyword arguments to the Assignment
         # constructor.
-        assignment = assignment or contentportlet.Assignment()
+        assignment = assignment or contentportlet.Assignment(content='/front-page')
         return getMultiAdapter((context, request, view, manager, assignment),
                                IPortletRenderer)
 
     def test_render(self):
         # TODO: Pass any keyword arguments to the Assignment constructor.
         r = self.renderer(context=self.portal,
-                          assignment=contentportlet.Assignment())
+                          assignment=contentportlet.Assignment(content='/front-page'))
         r = r.__of__(self.folder)
         r.update()
         output = r.render()

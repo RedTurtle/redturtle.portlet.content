@@ -95,18 +95,18 @@ class Assignment(base.Assignment):
     showSocial = False
     imageScale = ""
 
-    def __init__(self, portletTitle='',
-                      showTitle=False,
-                      showDescr=False,
-                      showText=False,
-                      showImage=False,
-                      imageScale="",
-                      showComments=False,
-                      showSocial=False,
-                      showMore=False,
-                      content=None,
-                      portletId='',
-                      portletClass=''):
+    def __init__(self, content,
+                       portletTitle='',
+                       showTitle=False,
+                       showDescr=False,
+                       showText=False,
+                       showImage=False,
+                       imageScale="",
+                       showComments=False,
+                       showSocial=False,
+                       showMore=False,
+                       portletId='',
+                       portletClass=''):
 
         self.portletTitle = portletTitle
         self.showTitle = showTitle
