@@ -65,8 +65,7 @@
         <tal:comments-show condition="view/data/showComments">
         	<tal:comments define="comments python:view.getCommentsLen(item_obj)"
 			  	  		  tal:condition="comments">
-				  <a href="" tal:attributes="href string:${item/getURL}/#comments;
-				  							 title string:Comments">
+				  <a alt="" tal:attributes="href string:${item/getURL}/#comments">
 				  	<span tal:content="python:view.getCommentsString(comments)"/>
 				  </a>
 				  <span tal:condition="view/data/showMore">|</span>
