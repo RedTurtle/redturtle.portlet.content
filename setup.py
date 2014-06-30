@@ -6,7 +6,7 @@ version = '1.4.1.dev0'
 setup(name='redturtle.portlet.content',
       version=version,
       description="A generic portlet that allows to show various parts of an object, like the title, description, text, image and comments.",
-      long_description=open("README.txt").read() + "\n" +
+      long_description=open("README.rst").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
