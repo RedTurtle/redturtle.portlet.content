@@ -4,7 +4,7 @@ Changelog
 1.4.1 (unreleased)
 ------------------
 
-- Fix dei test [keul]
+- Fixed tests [keul]
 
 1.4.0 (2013-07-08)
 ------------------
