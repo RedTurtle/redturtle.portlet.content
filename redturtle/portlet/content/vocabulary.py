@@ -6,12 +6,7 @@ except ImportError:
 from zope.interface import implements
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
-from zope.i18n import translate
-from Products.CMFCore.utils import getToolByName
-from redturtle.portlet.content import ContentPortletMessageFactory as _
 from plone.app.imaging.utils import getAllowedSizes
-from zope.component import queryUtility
-from Products.CMFCore.interfaces import IPropertiesTool
 
 
 class ImageMiniaturesVocabulary(object):
