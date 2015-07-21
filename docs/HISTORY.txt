@@ -5,6 +5,8 @@ Changelog
 ------------------
 
 - Fixed tests [keul]
+- Removed useless empty ALT atribute on link [keul]
+- Fixed link to comments to prevent final slash before hash [keul]
 
 1.4.0 (2013-07-08)
 ------------------
