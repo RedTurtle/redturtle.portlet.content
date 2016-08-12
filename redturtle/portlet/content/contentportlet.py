@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 from plone.app.discussion.interfaces import IConversation
 from plone.app.form.widgets.uberselectionwidget import UberSelectionWidget
 from plone.app.portlets.portlets import base
 from plone.app.vocabularies.catalog import SearchableTextSourceBinder
+from plone.memoize import view
 from plone.portlets.interfaces import IPortletDataProvider
 from Products.CMFCore.interfaces._content import ISiteRoot
 from Products.CMFCore.utils import getToolByName
@@ -142,12 +144,19 @@ class Renderer(base.Renderer):
 
     render = ViewPageTemplateFile('contentportlet.pt')
 
+    @property
+    def available(self):
+        if self.getItem():
+            return True
+        return False
+
     def getPortletClass(self):
         if self.data.portletClass:
             return self.data.portletClass
         else:
             return ''
 
+    @view.memoize
     def getItem(self):
         context = self.context
         root_path = context.portal_url.getPortalObject().getPhysicalPath()
@@ -297,7 +306,7 @@ class Renderer(base.Renderer):
 class AddForm(base.AddForm):
     """Portlet add form.
     """
-    
+
     @property
     def form_fields(self):
         """
