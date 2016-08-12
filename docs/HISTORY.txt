@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.4.2 (unreleased)
+1.4.2 (2016-08-12)
 ------------------
 
 - No render the portlet when the user can't access to the content
