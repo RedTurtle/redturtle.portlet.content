@@ -3,7 +3,7 @@ from plone.app.discussion.interfaces import IConversation
 from plone.app.form.widgets.uberselectionwidget import UberSelectionWidget
 from plone.app.portlets.portlets import base
 from plone.app.vocabularies.catalog import SearchableTextSourceBinder
-from plone.memoize import view
+from plone.memoize.instance import memoize
 from plone.portlets.interfaces import IPortletDataProvider
 from Products.CMFCore.interfaces._content import ISiteRoot
 from Products.CMFCore.utils import getToolByName
@@ -144,7 +144,6 @@ class Renderer(base.Renderer):
 
     render = ViewPageTemplateFile('contentportlet.pt')
 
-    @property
     def available(self):
         if self.getItem():
             return True
@@ -156,7 +155,7 @@ class Renderer(base.Renderer):
         else:
             return ''
 
-    @view.memoize
+    @memoize
     def getItem(self):
         context = self.context
         root_path = context.portal_url.getPortalObject().getPhysicalPath()

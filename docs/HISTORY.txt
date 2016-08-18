@@ -4,13 +4,13 @@ Changelog
 1.4.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix portlet caching [cekk]
 
 
 1.4.2 (2016-08-12)
 ------------------
 
-- No render the portlet when the user can't access to the content
+- Don't render the portlet when the user can't access to the content
   [cekk]
 
 
