@@ -4,7 +4,7 @@ Changelog
 1.4.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix available property [cekk]
 
 
 1.4.3 (2016-08-18)

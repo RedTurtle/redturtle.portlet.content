@@ -144,6 +144,7 @@ class Renderer(base.Renderer):
 
     render = ViewPageTemplateFile('contentportlet.pt')
 
+    @property
     def available(self):
         if self.getItem():
             return True
