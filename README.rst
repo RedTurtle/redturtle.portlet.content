@@ -20,7 +20,11 @@ __ http://pypi.python.org/pypi/sc.social.bookmarks
 
 Dependencies
 ============
-This product has been tested on Plone 3.3.5 and Plone 4.
+
+From version 2.0.0 this product is compatible only for Plone 5.
+
+1.x.x versions still works on Plone 3.3.5 and Plone 4.
+
 
 Credits
 =======
@@ -40,4 +44,3 @@ This product was developed by RedTurtle team.
 .. image:: http://www.redturtle.net/redturtle_banner.png
    :alt: RedTurtle Site
    :target: http://www.redturtle.net/
-

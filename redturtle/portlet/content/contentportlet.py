@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
+from plone import api
 from plone.app.discussion.interfaces import IConversation
-from plone.app.form.widgets.uberselectionwidget import UberSelectionWidget
 from plone.app.portlets.portlets import base
-from plone.app.vocabularies.catalog import SearchableTextSourceBinder
+from plone.app.vocabularies.catalog import CatalogSource
 from plone.memoize.instance import memoize
 from plone.portlets.interfaces import IPortletDataProvider
-from Products.CMFCore.interfaces._content import ISiteRoot
-from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from redturtle.portlet.content import ContentPortletMessageFactory as _
 from string import Template
+from z3c.form.interfaces import HIDDEN_MODE
+from ZODB.POSException import POSKeyError
 from zope import schema
-from zope.component._api import getUtility
-from zope.formlib import form
 from zope.i18n import translate
 from zope.interface import implements
 import re
@@ -28,6 +26,14 @@ class IContentPortlet(IPortletDataProvider):
     portletTitle = schema.TextLine(title=_(u"Title of the portlet"),
                                description=_(u"Insert the title of the portlet. If empty, the title will be the title of the object."),
                                required=False)
+
+    content = schema.Choice(
+        title=_(u"Target object"),
+        description=_(u"Find the item to show."),
+        required=True,
+        source=CatalogSource()
+        )
+
     showTitle = schema.Bool(title=_(u"show_title", default=u"Show title"),
                                description=_(u"Show the title of the object."),
                                required=False)
@@ -62,14 +68,10 @@ class IContentPortlet(IPortletDataProvider):
                                default=False,
                                required=False)
 
-    showMore = schema.Bool(title=_(u"Show more"),
-                               description=_(u"Is a link to the object, to show all the informations. If checked, the title will not be clickable."),
-                               required=False)
-
-    content = schema.Choice(title=_(u"Target object"),
-                            description=_(u"Find the item to show."),
-                            required=True,
-                            source=SearchableTextSourceBinder({}, default_query='path:'))
+    showMore = schema.Bool(
+        title=_(u"Show more"),
+        description=_(u"Is a link to the object, to show all the informations. If checked, the title will not be clickable."),
+        required=False)
 
     portletId = schema.TextLine(title=_(u"Id of the portlet"),
                             description=_(u"Insert an Id for the portlet. If empty, the id will be the id of the object."),
@@ -146,9 +148,7 @@ class Renderer(base.Renderer):
 
     @property
     def available(self):
-        if self.getItem():
-            return True
-        return False
+        return self.item and True or False
 
     def getPortletClass(self):
         if self.data.portletClass:
@@ -156,61 +156,60 @@ class Renderer(base.Renderer):
         else:
             return ''
 
+    @property
     @memoize
-    def getItem(self):
-        context = self.context
-        root_path = context.portal_url.getPortalObject().getPhysicalPath()
-        item_path = self.data.content.split('/')
-        item_url = '/'.join(root_path) + '/'.join(item_path[:-1])
-        item = context.portal_catalog(path={'query': item_url, 'depth': 1}, id=item_path[-1])
-        if item:
-            return item[0]
-        else:
+    def item(self):
+        if not self.data.content:
             return None
+        return api.content.get(UID=self.data.content)
 
-    def needObj(self, item):
-        if (self.data.showText or self.data.showImage or self.data.showComments or self.data.showSocial) and item:
-            return item.getObject()
-        else:
-            return None
+    # def needObj(self):
+    #     if (self.data.showText or self.data.showImage or self.data.showComments or self.data.showSocial) and item:
+    #         return item.getObject()
+    #     else:
+    #         return None
 
-    def getPortletId(self, item):
+    def getPortletId(self):
         if self.data.portletId:
             return self.data.portletId
-        else:
-            return item.getId
-
-    def hasImageField(self, item):
-        try:
-            if item.getImage():
-                return True
-            else:
-                return False
-        except AttributeError:
-            return False
+        elif self.item:
+            return self.item.getId()
+        return ""
 
     def getImageScale(self):
-        return self.data.imageScale or "mini"
+        if not self.item:
+            return ""
+        scale = self.data.imageScale or "mini"
+        try:
+            scaleview = self.item.unrestrictedTraverse('@@images')
+            return scaleview.scale('image', scale=scale).tag()
+        except (AttributeError, POSKeyError):
+            # The object doesn't have an image field
+            return ""
 
     def getClass(self):
         if self.data.portletTitle:
             return 'portletHeader'
-        else:
-            return 'portletHeader hidden'
+        return 'portletHeader hidden'
 
-    def getItemDescription(self, item):
-        portal_transforms = getToolByName(self, 'portal_transforms')
-        data = portal_transforms.convert('web_intelligent_plain_text_to_html', item.Description)
+    def getItemDescription(self):
+        if not self.item:
+            return ''
+        portal_transforms = api.portal.get_tool('portal_transforms')
+        data = portal_transforms.convert(
+            'web_intelligent_plain_text_to_html', self.item.Description())
         return data.getData()
 
-    def getCommentsLen(self, item):
+    def getCommentsLen(self):
         """
         Return the number of comments of the object
         """
-        if not item.restrictedTraverse('@@conversation_view').enabled():
+        if not self.item:
             return 0
-        wf = getToolByName(self.context, 'portal_workflow')
-        discussions = IConversation(item)
+        if not self.item.restrictedTraverse('@@conversation_view').enabled():
+            return 0
+        wf = api.portal.get_tool('portal_workflow')
+        discussions = IConversation(self.item)
         list_discussions = discussions.getThreads()
         num_discussions = 0
         for discuss in list_discussions:
@@ -232,10 +231,13 @@ class Renderer(base.Renderer):
 
         return "%s %s" % (str(comments), comments_msg)
 
-    def socialProviders(self, item):
+    def socialProviders(self):
         """Returns a list of dicts with providers already
            filtered and populated"""
-        if not self.socialEnabled(item):
+        item = self.item
+        if not item:
+            return []
+        if not self.socialEnabled():
             return []
         providers = []
         available = self.availableProviders()
@@ -254,14 +256,17 @@ class Renderer(base.Renderer):
             providers.append(provider)
         return providers
 
-    def socialEnabled(self, item):
+    def socialEnabled(self):
         """Validates if social links should be visibles
            for this item"""
+        item = self.item
+        if not item:
+            return False
         if not self.data.showSocial or not item:
             return False
         if not self.socialLinksProduct():
             return False
-        pp = getToolByName(self.context, 'portal_properties')
+        pp = api.portal.get_tool('portal_properties')
         if hasattr(pp, 'sc_social_bookmarks_properties'):
             enabled_portal_types = pp.sc_social_bookmarks_properties.getProperty("enabled_portal_types") or []
         else:
@@ -272,7 +277,7 @@ class Renderer(base.Renderer):
         """
         Check if sc.social.bookmarks is installed
         """
-        quickinstaller_tool = getToolByName(self.context, 'portal_quickinstaller')
+        quickinstaller_tool = api.portal.get_tool('portal_quickinstaller')
         return quickinstaller_tool.isProductInstalled('sc.social.bookmarks')
 
     def availableProviders(self):
@@ -283,7 +288,7 @@ class Renderer(base.Renderer):
             from sc.social.bookmarks.config import all_providers
         except:
             return []
-        pp = getToolByName(self.context, 'portal_properties')
+        pp = api.portal.get_tool('portal_properties')
         if hasattr(pp, 'sc_social_bookmarks_properties'):
             bookmark_providers = pp.sc_social_bookmarks_properties.getProperty("bookmark_providers") or []
         else:
@@ -306,26 +311,21 @@ class Renderer(base.Renderer):
 class AddForm(base.AddForm):
     """Portlet add form.
     """
+    schema = IContentPortlet
 
-    @property
-    def form_fields(self):
+    def updateWidgets(self):
         """
         If sc.social.bookmarks isn't installed, omit social field
         """
-        ff = form.Fields(IContentPortlet)
-        ff['content'].custom_widget = UberSelectionWidget
-        self.socialLinksProduct()
+        super(AddForm, self).updateWidgets()
         if not self.socialLinksProduct():
-            return ff.omit('showSocial')
-        else:
-            return ff
+            self.widgets['showSocial'].mode = HIDDEN_MODE
 
     def create(self, data):
         return Assignment(**data)
 
     def socialLinksProduct(self):
-        portal = getUtility(ISiteRoot)
-        quickinstaller_tool = getToolByName(portal, 'portal_quickinstaller')
+        quickinstaller_tool = api.portal.get_tool('portal_quickinstaller')
         return quickinstaller_tool.isProductInstalled('sc.social.bookmarks')
 
 
@@ -334,19 +334,17 @@ class EditForm(base.EditForm):
 
     If sc.social.bookmarks isn't installed, omit social field
     """
-    @property
-    def form_fields(self):
-        '''
-        '''
-        ff = form.Fields(IContentPortlet)
-        ff['content'].custom_widget = UberSelectionWidget
-        self.socialLinksProduct()
+
+    schema = IContentPortlet
+
+    def updateWidgets(self):
+        """
+        If sc.social.bookmarks isn't installed, omit social field
+        """
+        super(EditForm, self).updateWidgets()
         if not self.socialLinksProduct():
-            return ff.omit('showSocial')
-        else:
-            return ff
+            self.widgets['showSocial'].mode = HIDDEN_MODE
 
     def socialLinksProduct(self):
-        portal = getUtility(ISiteRoot)
-        quickinstaller_tool = getToolByName(portal, 'portal_quickinstaller')
+        quickinstaller_tool = api.portal.get_tool('portal_quickinstaller')
         return quickinstaller_tool.isProductInstalled('sc.social.bookmarks')

@@ -4,7 +4,8 @@ Changelog
 1.4.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Drop Plone < 5 compatibility. For Plone < 5, use 1.x branch.
+  [cekk]
 
 
 1.4.4 (2016-08-18)
