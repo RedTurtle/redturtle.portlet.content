@@ -12,7 +12,7 @@ from z3c.form.interfaces import HIDDEN_MODE
 from ZODB.POSException import POSKeyError
 from zope import schema
 from zope.i18n import translate
-from zope.interface import implements
+from zope.interface import implementer
 import re
 
 
@@ -55,7 +55,7 @@ class IContentPortlet(IPortletDataProvider):
 
     imageScale = schema.Choice(title=_(u"Image miniature"),
                                description=_(u"Select and image miniature dimension, if you want to show the image for this content. If empty will be used mini miniature."),
-                               vocabulary="redturtle.portlet.content.ImageMiniaturesVocabulary",
+                               vocabulary="plone.app.vocabularies.ImagesScales",
                                required=False)
 
     showComments = schema.Bool(title=_(u"Show number of comments"),
@@ -82,6 +82,7 @@ class IContentPortlet(IPortletDataProvider):
                         required=False)
 
 
+@implementer(IContentPortlet)
 class Assignment(base.Assignment):
     """Portlet assignment.
 
@@ -89,7 +90,6 @@ class Assignment(base.Assignment):
     with columns.
     """
 
-    implements(IContentPortlet)
     """
     portletId, portletClass and showComments are added here, to avoid breaking old portlets
     """

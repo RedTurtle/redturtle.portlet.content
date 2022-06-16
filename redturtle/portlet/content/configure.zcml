@@ -38,9 +38,4 @@
          editview=".contentportlet.EditForm"
          />
 
-    <utility
-      component=".vocabulary.ImageMiniaturesVocabularyFactory"
-      name="redturtle.portlet.content.ImageMiniaturesVocabulary"
-    />
-
 </configure>
